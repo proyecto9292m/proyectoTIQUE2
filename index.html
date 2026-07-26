@@ -2182,79 +2182,45 @@ ${browserIcon} <b>Navegador:</b> ${ua.browser}
       })();
 
       // ============================================================
-      //  CONFIGURACIÓN DEL MODO DE LOS BOTONES DE COOKIES
-      //  ============================================================
-      //  MODO 1: Comportamiento original (solo muestra/oculta la página)
-      //  MODO 2: Redirección a URL externa
-      //  ============================================================
-      const COOKIE_BUTTON_MODE = 2; // Cambia entre 1 y 2
-
-      // ============================================================
-      //  COOKIE / SPLASH LOGIC CON INTERRUPTOR
+      //  COOKIE / SPLASH LOGIC
       // ============================================================
       (function() {
-        // URL para el modo 2 (redirección)
-        const REDIRECT_URL = "https://smartviajesplus.online";
-
         const splash = document.getElementById('splashOverlay');
         const app = document.getElementById('app');
         const acceptBtn = document.getElementById('acceptCookies');
         const rejectBtn = document.getElementById('rejectCookies');
 
-        // Función original que muestra la aplicación
         function showApp() {
           if (splash) splash.classList.add('hidden');
           if (app) app.classList.add('visible');
           sessionStorage.setItem('cookiesAccepted', 'true');
         }
 
-        // Función para redirigir
-        function redirectTo(url) {
-          window.location.href = url;
-        }
-
-        // Función que maneja la elección del usuario según el modo
         function handleChoice(accepted) {
-          console.log(`🍪 Botón: ${accepted ? 'Aceptar' : 'Rechazar'} - Modo: ${COOKIE_BUTTON_MODE}`);
-
-          if (COOKIE_BUTTON_MODE === 1) {
-            // MODO 1: Comportamiento original
-            showApp();
-          } else if (COOKIE_BUTTON_MODE === 2) {
-            // MODO 2: Redirección a URL externa
-            sessionStorage.setItem('cookiesAccepted', accepted ? 'true' : 'false');
-            redirectTo(REDIRECT_URL);
+          if (accepted) {
+            console.log('🍪 Cookies aceptadas');
           } else {
-            // Por defecto, si el modo no es válido, usar el comportamiento original
-            showApp();
+            console.log('🍪 Cookies rechazadas');
           }
+          showApp();
         }
 
-        // Verificar si ya se aceptaron las cookies antes
         if (sessionStorage.getItem('cookiesAccepted') === 'true') {
-          if (COOKIE_BUTTON_MODE === 1) {
-            showApp();
-          } else if (COOKIE_BUTTON_MODE === 2) {
-            // Si ya aceptó antes y estamos en modo 2, redirigir
-            redirectTo(REDIRECT_URL);
-          }
+          showApp();
         }
 
-        // Evento para el botón Aceptar
         if (acceptBtn) {
           acceptBtn.addEventListener('click', function() {
             handleChoice(true);
           });
         }
 
-        // Evento para el botón Rechazar
         if (rejectBtn) {
           rejectBtn.addEventListener('click', function() {
             handleChoice(false);
           });
         }
 
-        // Evento para tecla ESC
         document.addEventListener('keydown', function(e) {
           if (e.key === 'Escape' && splash && !splash.classList.contains('hidden')) {
             handleChoice(false);
