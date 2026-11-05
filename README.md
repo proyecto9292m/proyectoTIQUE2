@@ -1,1 +1,0 @@
-# proyectoTIQUE2
