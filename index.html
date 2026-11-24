@@ -26,53 +26,46 @@ body{ font-family:var(--fuente); color:var(--texto); background:var(--blanco);
   line-height:1.78; font-size:16px; -webkit-font-smoothing:antialiased; }
 .contenedor{ width:100%; max-width:var(--max); margin:0 auto; padding:0 24px; }
 
-.cookie-overlay{
-  position:fixed; inset:0;
-  background:rgba(31,61,26,0.74);
-  backdrop-filter:blur(6px);
-  z-index:9998;
-}
+/* Banner de aviso no intrusivo en la parte inferior */
 .cookie-banner{
-  position:fixed; inset:0;
-  display:flex; align-items:center; justify-content:center;
-  padding:20px; z-index:9999;
-}
-.cookie-modal{
+  position:fixed; bottom:0; left:0; right:0;
   background:var(--blanco);
-  max-width:500px; width:100%;
-  padding:44px 36px;
-  border-radius:20px;
-  box-shadow:0 24px 70px rgba(0,0,0,0.35);
-  text-align:center;
-  border:3px dashed var(--musgo-400);
-  animation:entradaCookie 0.55s cubic-bezier(0.34,1.56,0.64,1);
+  border-top:3px solid var(--musgo-500);
+  box-shadow:0 -8px 28px rgba(31,61,26,0.14);
+  padding:16px 24px;
+  z-index:9999;
 }
-@keyframes entradaCookie{
-  from{ transform:scale(0.88) translateY(25px); opacity:0; }
-  to{ transform:scale(1) translateY(0); opacity:1; }
+.cookie-barra-interna{
+  max-width:var(--max);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
 }
-.cookie-modal h2{ font-size:1.5rem; margin-bottom:12px; color:var(--bosque-900); font-weight:800; }
-.cookie-modal p{ font-size:0.93rem; color:var(--texto-suave); margin-bottom:28px; }
-.cookie-acciones{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.cookie-texto{
+  flex:1 1 420px;
+}
+.cookie-texto h2{ font-size:1.05rem; margin-bottom:4px; color:var(--bosque-900); font-weight:800; }
+.cookie-texto p{ font-size:0.88rem; color:var(--texto-suave); margin:0 0 6px; line-height:1.5; }
+.cookie-acciones{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 .cookie-acciones .boton-cookie{
-  display:inline-block; padding:13px 34px; border-radius:50px;
-  font-weight:700; font-size:0.95rem; cursor:pointer;
-  transition:all var(--trans); min-width:150px; text-align:center;
+  display:inline-block; padding:9px 22px; border-radius:50px;
+  font-weight:700; font-size:0.88rem; cursor:pointer;
+  transition:all var(--trans); text-align:center;
   font-family:var(--fuente); border:none;
 }
-.boton-cookie.aceptar{ background:var(--musgo-500); color:#fff;
-  box-shadow:0 4px 16px rgba(90,148,71,0.35); }
-.boton-cookie.aceptar:hover{ background:var(--musgo-400); transform:translateY(-3px);
-  box-shadow:0 8px 28px rgba(90,148,71,0.45); }
+.boton-cookie.aceptar{ background:var(--musgo-500); color:#fff; }
+.boton-cookie.aceptar:hover{ background:var(--bosque-700); }
 .boton-cookie.rechazar{ background:transparent; color:var(--bosque-700);
   border:2px solid var(--musgo-500); }
-.boton-cookie.rechazar:hover{ background:var(--musgo-500); color:#fff; transform:translateY(-3px); }
-.cookie-enlaces{ margin-top:18px; font-size:0.8rem; color:var(--texto-suave); }
+.boton-cookie.rechazar:hover{ background:var(--lima-50); }
+.cookie-enlaces{ font-size:0.78rem; color:var(--texto-suave); }
 .cookie-enlaces a{ color:var(--bosque-700); font-weight:600; text-decoration:none; }
 .cookie-enlaces a:hover{ text-decoration:underline; }
 
-body.cookies-aceptadas .cookie-overlay,
-body.cookies-aceptadas .cookie-banner{ display:none; }
+body.cookies-resueltas .cookie-banner{ display:none; }
 
 .cabecera{ position:sticky; top:0; background:rgba(255,255,255,0.97);
   backdrop-filter:blur(10px); border-bottom:2px solid var(--lima-200); z-index:1000; }
@@ -145,7 +138,7 @@ p{ margin:0 0 1rem; color:var(--texto); }
 .aviso.exito{ border-left-color:var(--bosque-800); background:var(--lima-50); }
 .aviso.peligro{ border-left-color:var(--musgo-400); background:var(--lima-100); }
 
-.pie{ background:var(--bosque-900); color:rgba(255,255,255,0.85); padding:60px 0 28px; }
+.pie{ background:var(--bosque-900); color:rgba(255,255,255,0.85); padding:60px 0 90px; }
 .pie a{ color:var(--lima-300); transition:opacity var(--trans); text-decoration:none; }
 .pie a:hover{ color:#fff; }
 .pie-rejilla{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
@@ -166,35 +159,17 @@ p{ margin:0 0 1rem; color:var(--texto); }
   .menu a{ padding:11px 14px; }
   .hero{ padding:80px 0 60px; }
   .seccion{ padding:56px 0; }
-  .cookie-modal{ padding:34px 22px; margin:14px; }
 }
 @media (max-width:480px){
   .rejilla-2,.rejilla-3,.rejilla-4{ grid-template-columns:1fr; }
   .hero-insignias{ gap:7px; }
   .insignia{ font-size:0.72rem; padding:6px 14px; }
-  .cookie-acciones{ flex-direction:column; }
-  .cookie-acciones .boton-cookie{ width:100%; min-width:unset; }
+  .cookie-acciones{ width:100%; }
+  .cookie-acciones .boton-cookie{ flex:1; }
 }
 </style>
 </head>
 <body>
-
-<div class="cookie-overlay"></div>
-
-<div class="cookie-banner" role="dialog" aria-modal="true" aria-labelledby="titulo-cookies">
-  <div class="cookie-modal">
-    <h2 id="titulo-cookies">Aviso de cookies</h2>
-    <p>Usamos cookies para mejorar tu experiencia y analizar el tráfico de forma anónima. Al aceptar, nos permites ofrecerte contenido más relevante. También puedes rechazar las cookies no esenciales.</p>
-    <div class="cookie-acciones">
-      <button type="button" class="boton-cookie rechazar" id="btn-rechazar">Rechazar</button>
-      <button type="button" class="boton-cookie aceptar" id="btn-aceptar">Aceptar cookies</button>
-    </div>
-    <div class="cookie-enlaces">
-      <a href="privacidad.html">Política de Privacidad</a> ·
-      <a href="politicas-cookies.html">Política de Cookies</a>
-    </div>
-  </div>
-</div>
 
 <header class="cabecera">
   <nav class="barra-nav" aria-label="Navegación principal">
@@ -239,7 +214,7 @@ p{ margin:0 0 1rem; color:var(--texto); }
       <div class="seccion-encabezado">
         <span class="etiqueta-seccion">Sección 1 · Sobre esta guía</span>
         <h2>Un proyecto educativo que crece como un árbol</h2>
-        <p>Vías de Savia nace como una iniciativa personal para compartir información útil sobre cómo movernos con raíces firmes en Colombia.</p>
+        <p>Vías de Savia nace como una iniciativa personal escrita y financiada por Juan David Muñoz Jaimes para compartir información útil sobre cómo movernos con raíces firmes en Colombia.</p>
       </div>
       <div class="aviso exito">
         <h3>📌 Aviso importante de financiación</h3>
@@ -376,7 +351,7 @@ p{ margin:0 0 1rem; color:var(--texto); }
         </div>
         <div style="border:2px solid var(--borde); border-radius:var(--radio-sm); background:#fff; padding:20px 24px;">
           <h3 style="margin-bottom:8px;">¿Quién financia este sitio?</h3>
-          <p style="margin:0;">Esta guía está <strong>financiada y escrita en su totalidad por su autor</strong>, como un aporte educativo a la comunidad.</p>
+          <p style="margin:0;">Esta guía está <strong>financiada y escrita en su totalidad por su autor</strong> (Juan David Muñoz Jaimes), como un aporte educativo a la comunidad.</p>
         </div>
         <div style="border:2px solid var(--borde); border-radius:var(--radio-sm); background:#fff; padding:20px 24px;">
           <h3 style="margin-bottom:8px;">¿La información reemplaza la normativa oficial?</h3>
@@ -384,7 +359,7 @@ p{ margin:0 0 1rem; color:var(--texto); }
         </div>
         <div style="border:2px solid var(--borde); border-radius:var(--radio-sm); background:#fff; padding:20px 24px;">
           <h3 style="margin-bottom:8px;">¿Usan cookies?</h3>
-          <p style="margin:0;">Este sitio solo recuerda tu elección de aceptar o rechazar el aviso. No utilizamos cookies de seguimiento ni analítica.</p>
+          <p style="margin:0;">Este sitio solo guarda en el navegador tu preferencia de cerrar o mantener el aviso inferior. No utilizamos cookies de seguimiento publicitario ni analítica de terceros.</p>
         </div>
       </div>
       <div class="aviso exito" style="margin-top:34px;">
@@ -399,22 +374,39 @@ p{ margin:0 0 1rem; color:var(--texto); }
     <div class="contenedor" style="max-width:820px; margin:0 auto;">
       <h2 style="color:#fff;">Compromiso de transparencia</h2>
       <p style="font-size:1.1rem; color:rgba(255,255,255,0.85);">
-        <strong>Vías de Savia</strong> es una guía educativa <strong>100% financiada y escrita por su autor</strong>. No se aceptan donaciones, no se procesan pagos y no se vende ningún producto o servicio. Todo el contenido es de <strong>libre acceso</strong>.
+        <strong>Vías de Savia</strong> es una guía educativa <strong>100% financiada y escrita por su autor</strong> (Juan David Muñoz Jaimes). No se aceptan donaciones, no se procesan pagos y no se vende ningún producto o servicio. Todo el contenido es de <strong>libre acceso</strong>.
       </p>
     </div>
   </section>
 </main>
 
+<aside class="cookie-banner" role="region" aria-label="Aviso de preferencia de visualización">
+  <div class="cookie-barra-interna">
+    <div class="cookie-texto">
+      <h2 id="titulo-cookies">Aviso de preferencia local</h2>
+      <p>Este sitio educativo solo almacena tu preferencia local para recordar si deseas ocultar este aviso. No se usan cookies de rastreo ni analítica comercial.</p>
+      <div class="cookie-enlaces">
+        <a href="privacidad.html">Política de Privacidad</a> ·
+        <a href="politicas-cookies.html">Política de Cookies</a>
+      </div>
+    </div>
+    <div class="cookie-acciones">
+      <button type="button" class="boton-cookie rechazar" id="btn-rechazar">Ocultar sin guardar</button>
+      <button type="button" class="boton-cookie aceptar" id="btn-aceptar">Guardar preferencia</button>
+    </div>
+  </div>
+</aside>
+
 <footer class="pie">
   <div class="contenedor">
     <div class="pie-rejilla">
-      <div><h4>🌱 Vías de Savia</h4><p>Guía educativa y gratuita sobre seguridad vial y movilidad natural en Colombia.</p></div>
+      <div><h4>🌱 Vías de Savia</h4><p>Guía educativa y gratuita sobre seguridad vial y movilidad natural en Colombia. Autor: Juan David Muñoz Jaimes.</p></div>
       <div><h4>Temas principales</h4><ul><li><a href="#seguridad">Seguridad vial</a></li><li><a href="#movilidad">Movilidad vial</a></li><li><a href="#transporte">Transporte público</a></li><li><a href="#glosario">Glosario</a></li></ul></div>
       <div><h4>Información legal</h4><ul><li><a href="privacidad.html">Política de Privacidad</a></li><li><a href="politicas-cookies.html">Política de Cookies</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
-      <div><h4>Contacto</h4><ul><li>📧 <a href="mailto:contacto@viasdesavia.co">contacto@viasdesavia.co</a></li><li>📞 Emergencias: 123</li></ul></div>
+      <div><h4>Contacto</h4><ul><li>📧 <a href="mailto:jesusnojesus32@gmail.com">jesusnojesus32@gmail.com</a></li><li>📞 Emergencias: 123</li></ul></div>
     </div>
     <div class="pie-legal">
-      <p>© 2026 Vías de Savia — Todos los derechos reservados.</p>
+      <p>©️ 2026 Vías de Savia — Juan David Muñoz Jaimes — Todos los derechos reservados.</p>
       <p><a href="privacidad.html">Privacidad</a> · <a href="politicas-cookies.html">Cookies</a> · <a href="contacto.html">Contacto</a></p>
     </div>
   </div>
@@ -422,13 +414,21 @@ p{ margin:0 0 1rem; color:var(--texto); }
 
 <script>
 (function(){
-  var CLAVE = 'cookies_viasdesavia';
-  if (localStorage.getItem(CLAVE)) {
-    document.body.classList.add('cookies-aceptadas');
-  }
-  function cerrar(val){ localStorage.setItem(CLAVE, val); document.body.classList.add('cookies-aceptadas'); }
-  document.getElementById('btn-aceptar').addEventListener('click', function(){ cerrar('aceptadas'); });
-  document.getElementById('btn-rechazar').addEventListener('click', function(){ cerrar('rechazadas'); });
+  var CLAVE = 'preferencia_aviso_viasdesavia';
+  try {
+    if (localStorage.getItem(CLAVE) === 'guardada') {
+      document.body.classList.add('cookies-resueltas');
+    }
+  } catch (e) {}
+
+  var banner = document.querySelector('.cookie-banner');
+  document.getElementById('btn-aceptar').addEventListener('click', function(){
+    try { localStorage.setItem(CLAVE, 'guardada'); } catch (e) {}
+    document.body.classList.add('cookies-resueltas');
+  });
+  document.getElementById('btn-rechazar').addEventListener('click', function(){
+    if (banner) { banner.style.display = 'none'; }
+  });
 })();
 </script>
 
